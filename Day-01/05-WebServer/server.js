@@ -2,16 +2,39 @@ var http = require("http");
 var path = require("path");
 var fs = require("fs");
 var url = require("url");
+var qs = require("querystring");
+var calculator = require("./calculator");
+
+
+var staticResourceExtns = [".html",".css",".js",".jpg",".png",".txt",".json",".ico"];
+
+function isStaticResource(resourceName){
+    return staticResourceExtns.indexOf(path.extname(resourceName)) !== -1;
+}
 
 var server = http.createServer(function(req, res){
-    console.log(req.url);
-    var resourcePath = path.join(__dirname, req.url);
-    if (!fs.existsSync(resourcePath)){
+    req.url = url.parse(req.url);
+    req.query = qs.parse(req.url.query);
+    if (isStaticResource(req.url.pathname)){
+        var resourcePath = path.join(__dirname, req.url.pathname);
+        if (!fs.existsSync(resourcePath)){
+            res.statusCode = 404;
+            res.end();
+            return;
+        }
+        fs.createReadStream(resourcePath).pipe(res);
+    } else if (req.url.pathname === "/calculator"){
+      var n1 = parseInt(req.query.n1,10),
+          n2 = parseInt(req.query.n2,10),
+          operation = req.query.operation;
+
+      var result = calculator[operation](n1, n2);
+      res.write(result.toString());
+      res.end();
+    } else {
         res.statusCode = 404;
         res.end();
-        return;
     }
-    fs.createReadStream(resourcePath).pipe(res);
 });
 server.listen(9090);
 console.log("Server listening on port 9090!");
