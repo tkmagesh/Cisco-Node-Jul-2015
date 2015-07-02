@@ -87,7 +87,16 @@ function f4(next){
 var fns = [f1, f2, f3, f4];
 
 function run(fns){
-
+    function exec(fns){
+        var first = fns[0];
+        var remaining = fns.slice(1);
+        var next = function(){
+             exec(remaining);
+        }
+        if (typeof first === "function")
+            first(next);
+    }
+    exec(fns);
 }
 run(fns);
 

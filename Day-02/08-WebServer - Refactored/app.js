@@ -1,8 +1,16 @@
 var middlewares = [];
 
 function app(req, res){
-    for(var i=0; i<middlewares.length; i++)
-        middlewares[i](req, res);
+   function exec(middlewares){
+        var first = middlewares[0];
+        var remaining = middlewares.slice(1);
+        var next = function(){
+             exec(remaining);
+        }
+        if (typeof first === "function")
+            first(req, res, next);
+    }
+    exec(middlewares);
 }
 
 app.use = function(middleware){

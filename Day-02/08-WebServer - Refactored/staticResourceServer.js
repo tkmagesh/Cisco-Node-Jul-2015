@@ -7,7 +7,7 @@ function isStaticResource(resourceName){
     return staticResourceExtns.indexOf(path.extname(resourceName)) !== -1;
 }
 
-module.exports = function(req, res){
+module.exports = function(req, res, next){
     if (isStaticResource(req.url.pathname)){
         var resourcePath = path.join(__dirname, req.url.pathname);
         if (!fs.existsSync(resourcePath)){
@@ -17,5 +17,7 @@ module.exports = function(req, res){
         }
         console.log(req.url.pathname + " exists");
         fs.createReadStream(resourcePath).pipe(res);
+    } else {
+        next();
     }
 }
