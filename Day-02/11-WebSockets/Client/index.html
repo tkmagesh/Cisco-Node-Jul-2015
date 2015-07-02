@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script>
+        window.addEventListener("DOMContentLoaded", init);
+        var connection = null;
+        function init(){
+            var btnSend = document.getElementById("btnSend");
+            btnSend.addEventListener("click", onBtnSendClick);
+
+            connection = new WebSocket("ws://localhost:9090");
+            connection.addEventListener("message", onMessageFromServer);
+        }
+        function onBtnSendClick(){
+            var msg = document.getElementById("txtMessage").value;
+            connection.send(msg);
+        }
+        function onMessageFromServer(evtArg){
+            document.getElementById("divMessages").innerHTML += evtArg.data + "<br/>"
+        }
+    </script>
+
+</head>
+<body>
+    <input type="text" name="" id="txtMessage">
+    <input type="button" value="Send" id="btnSend">
+    <div id="divMessages"></div>
+</body>
+</html>
