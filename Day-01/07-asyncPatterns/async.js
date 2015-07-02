@@ -43,5 +43,51 @@ function usingAddAsync(x,y){
     });
 }
 
-
 module.exports = usingAddAsync;
+
+
+
+function f1(next){
+    console.log("f1 initiated");
+    setTimeout(function(){
+        console.log("f1 done");
+        if (typeof next === "function")
+            next();
+    },2000);
+}
+
+function f2(next){
+    console.log("f2 initiated");
+    setTimeout(function(){
+        console.log("f2 done");
+        if (typeof next === "function")
+            next();
+    },2000);
+}
+
+function f3(next){
+    console.log("f3 initiated");
+    setTimeout(function(){
+        console.log("f3 done");
+        if (typeof next === "function")
+            next();
+    },2000);
+}
+
+function f4(next){
+    console.log("f4 initiated");
+    setTimeout(function(){
+        console.log("f4 done");
+        if (typeof next === "function")
+            next();
+    },2000);
+}
+
+
+var fns = [f1, f2, f3, f4];
+
+function run(fns){
+
+}
+run(fns);
+
